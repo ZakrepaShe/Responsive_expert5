@@ -1,0 +1,105 @@
+input[name="raz"] {display: none;}
+
+
+.gallery {position: relative; padding-top: 45%; margin: 0 2.3em; line-height: 0; border-bottom: 4em solid; background: no-repeat 50% 0; background-size: auto 100%;} /* стиль блока */ 
+
+.gallery label {display: inline-block; width: 20%; height: 4em; margin-bottom: -4em; background: no-repeat 50% 50%; background-size: calc(100% - 4px) calc(100% - 4px); cursor: pointer;}
+.gallery label:hover {background-color: #686868;} /* стиль при наведении на миниатюру */ 
+#raz1:checked ~ .gallery label:nth-of-type(1), /* стиль активного пункта */ 
+#raz2:checked ~ .gallery label:nth-of-type(2),
+#raz3:checked ~ .gallery label:nth-of-type(3),
+#raz4:checked ~ .gallery label:nth-of-type(4),
+#raz5:checked ~ .gallery label:nth-of-type(5) {opacity: .5; cursor: default;}
+
+#raz1:checked ~ .gallery, .gallery label:nth-of-type(1) {background-image: url(адрес_изо);}
+#raz2:checked ~ .gallery, .gallery label:nth-of-type(2) {background-image: url(адрес_изо);}
+#raz3:checked ~ .gallery, .gallery label:nth-of-type(3) {background-image: url(адрес_изо);}
+#raz4:checked ~ .gallery, .gallery label:nth-of-type(4) {background-image: url(адрес_изо);}
+#raz5:checked ~ .gallery, .gallery label:nth-of-type(5) {background-image: url(адрес_изо);}
+
+.gallery label:before { /* абзац создаёт кнопки-стрелки, которые можно и не использовать */ 
+ position: absolute; top: 40%; border-width: 2.3em 1em; border-style: solid;}
+#raz1:checked ~ .gallery label:nth-of-type(2):before, 
+#raz2:checked ~ .gallery label:nth-of-type(3):before,
+#raz3:checked ~ .gallery label:nth-of-type(4):before,
+#raz4:checked ~ .gallery label:nth-of-type(5):before,
+#raz5:checked ~ .gallery label:nth-of-type(1):before {content: ""; right: -2.3em; border-color: transparent transparent transparent #686868; box-shadow: -2px 0 0 -1px #000;}
+#raz1:checked ~ .gallery label:nth-of-type(5):before,
+#raz2:checked ~ .gallery label:nth-of-type(1):before, 
+#raz3:checked ~ .gallery label:nth-of-type(2):before, 
+#raz4:checked ~ .gallery label:nth-of-type(3):before, 
+#raz5:checked ~ .gallery label:nth-of-type(4):before {content: ""; left: -2.3em; border-color: transparent #686868 transparent transparent; box-shadow: 2px 0 0 -1px #000;}
+
+#raz1:checked ~ .gallery label:nth-of-type(1):after, /* абзац создаёт названия к изображениям, которые можно и не использовать */ 
+#raz2:checked ~ .gallery label:nth-of-type(2):after, 
+#raz3:checked ~ .gallery label:nth-of-type(3):after, 
+#raz4:checked ~ .gallery label:nth-of-type(4):after, 
+#raz5:checked ~ .gallery label:nth-of-type(5):after {content: attr(title); position: absolute; top: -2em; left: 0; width: 100%; text-align: center; font-weight: 900;}
+
+
+
+.gallerycontainer{
+position: relative;
+/*Add a height attribute and set to largest image's height to prevent overlaying*/
+}
+
+.thumbnail img{
+border: 1px solid white;
+margin: 0 5px 5px 0;
+}
+
+.thumbnail:hover{
+
+}
+
+.thumbnail:hover img{
+
+}
+
+.thumbnail span{ /*CSS for enlarged image*/
+position: absolute;
+
+padding: 5px;
+left: -1000px;
+
+visibility: hidden;
+color: black;
+text-decoration: none;
+}
+
+.thumbnail span img{ /*CSS for enlarged image*/
+border-width: 0;
+padding: 2px;
+}
+
+.thumbnail:hover span{ /*CSS for enlarged image*/
+visibility: visible;
+top: 0;
+left: 230px; /*position where enlarged image should offset horizontally */
+z-index: 50;
+}
+
+
+
+
+.portfolio{position:relative;width:1280px;height:156px;overflow:hidden;margin:0 auto}
+.portfolio #gallery_carousel{position:relative;float:left;width:948px;height:155px;margin:0px 0px 0 173px;overflow:hidden;}
+.portfolio #gallery_carousel #prev{position:absolute;top:60px;left:-30px;width:26px;height:50px;background:url(images/prevbtn.png) no-repeat;text-indent:-99999px}
+.portfolio #gallery_carousel #next{position:absolute;top:60px;right:-30px;width:26px;height:50px;background:url(images/nextbtn.png) no-repeat;text-indent:-99999px}
+.portfolio #gallery_carousel li{list-style:none;position:relative;float:left;width:800px;height:155px; font-family:Century Gothic;margin:0 8px; border: 2px solid #acacac; }
+.portfolio #gallery_carousel li img{position:relative;float:left;padding-left:-50px;}
+.portfolio #gallery_carousel li p{font-family:Century Gothic;margin:0 8px; padding:10px 10px 10px 100px;}
+
+.portfolio #prev{position:absolute;top:26px;left:129px;width:52px;height:58px;background:url(../img/arrow_left.jpg) no-repeat;text-indent:-99999px}
+.portfolio #next{position:absolute;top:17px;right:119px;width:85px;height:130px;background:url(../img/arrow_right.jpg)  no-repeat;text-indent:-99999px}
+
+
+
+
+
+
+
+
+
+
+
