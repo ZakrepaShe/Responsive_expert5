@@ -1,47 +1,153 @@
 ﻿<!DOCTYPE html>
 <html>
-	<head>
+    <head>
 
-		<link rel="stylesheet" type="text/css" href="modal.css" />
-		<link rel="stylesheet" type="text/css" href="css.css" />
-		<link rel="shortcut icon" href="logo.ico" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="modal.css" />
+        <link rel="stylesheet" type="text/css" href="css.css" />
+        <link rel="shortcut icon" href="logo.ico" type="image/x-icon">
 
-		<meta name="viewport" content="width=device-width">
-		<META name="keywords" content="услуги электрика, вызвать электрика, электрик, электрик киев, електрик, срочный вызов электрика, электромонтаж, монтаж проводки, прокладка проводки, ремонт розетки, прицепить люстру">
-		<title>Электрик Киев | Бесплатный вызов мастера</title>
-		<meta name="description" lang="ru" content="Отзывы: ?????Заказывала ремонт розеток. Очень довольна. Ребята быстро все починили. Вызвать электрика 093-589-34-48 Работаем без праздников и выходных " />
-		<meta name="google-site-verification" content="tguuizXfz-gBOuYkcv2YOZRrOZmkEIp-1clK8HnUaHI" />
-		<meta name='wmail-verification' content='644d9b0682c32def' />	
-		<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script defer src="js/jquery.flexslider.js"></script>
+        <meta name="viewport" content="width=device-width">
+        <META name="keywords" content="услуги электрика, вызвать электрика, электрик, электрик киев, електрик, срочный вызов электрика, электромонтаж, монтаж проводки, прокладка проводки, ремонт розетки, прицепить люстру">
+        <title>Электрик Киев | Бесплатный вызов мастера</title>
+        <meta name="description" lang="ru" content="Отзывы: ?????Заказывала ремонт розеток. Очень довольна. Ребята быстро все починили. Вызвать электрика 093-589-34-48 Работаем без праздников и выходных " />
+        <meta name="google-site-verification" content="tguuizXfz-gBOuYkcv2YOZRrOZmkEIp-1clK8HnUaHI" />
+        <meta name='wmail-verification' content='644d9b0682c32def' />
+        <link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script defer src="js/jquery.flexslider.js"></script>
 
-		<script type="text/javascript">
-			$(function() {
-				SyntaxHighlighter.all();
-			});
-			$(window).load(function() {
-				$('.flexslider').flexslider({
+        <!--loading flexslider
+        <script type="text/javascript">
+        $(function() {
+        SyntaxHighlighter.all();
+        });
+        $(window).load(function() {
+        $('.flexslider').flexslider({
+        animation : "slide",
+        start : function(slider) {
+        $('body').removeClass('loading');
+        }
+        });
+        });
+        </script>
+
+        Control flexslider-->
+        <script type="text/javascript">
+			// Youtube and Vimeo Flexslider Control
+			// Partly from Duppi on GitHub, partly from digging into the YouTube API
+			// Need to set this up to use classes instead of IDs
+
+			var tag = document.createElement('script');
+			tag.src = "http://www.youtube.com/player_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+			jQuery(window).load(function() {
+				jQuery('#hero .flexslider').flexslider({
+					useCSS : false,
 					animation : "slide",
-					start : function(slider) {
-						$('body').removeClass('loading');
+					directionNav : true,
+					controlNav : true,
+					animationLoop : true,
+					//slideshow: false,
+					pauseOnAction : true,
+					pauseOnHover : true,
+					video : true,
+				});
+
+				var vimeoPlayers = jQuery('#hero .flexslider').find('iframe'),
+				    player;
+
+				for (var i = 0,
+				    length = vimeoPlayers.length; i < length; i++) {
+					player = vimeoPlayers[i];
+					$f(player).addEvent('ready', ready);
+				}
+
+				function addEvent(element, eventName, callback) {
+					if (element.addEventListener) {
+						element.addEventListener(eventName, callback, false)
+					} else {
+						element.attachEvent(eventName, callback, false);
+					}
+				}
+
+				function ready(player_id) {
+					var froogaloop = $f(player_id);
+					froogaloop.addEvent('play', function(data) {
+						jQuery('#hero .flexslider').flexslider("pause");
+					});
+
+					froogaloop.addEvent('pause', function(data) {
+						jQuery('#hero .flexslider').flexslider("play");
+					});
+				}
+
+
+				jQuery("#hero .flexslider").flexslider({
+					before : function(slider) {
+						if (slider.slides.eq(slider.currentSlide).find('iframe').length !== 0)
+							$f(slider.slides.eq(slider.currentSlide).find('iframe').attr('id')).api('pause');
+						/* ------------------  YOUTUBE FOR AUTOSLIDER ------------------ */
+						playVideoAndPauseOthers($('.play3 iframe')[0]);
+					}
+				});
+
+				function playVideoAndPauseOthers(frame) {
+					jQuery('iframe').each(function(i) {
+						var func = this === frame ? 'playVideo' : 'stopVideo';
+						this.contentWindow.postMessage('{"event":"command","func":"' + func + '","args":""}', '*');
+					});
+				}
+
+				/* ------------------ PREV & NEXT BUTTON FOR FLEXSLIDER (YOUTUBE) ------------------ */
+				/*
+				jQuery('.flex-next, .flex-prev').click(function() {
+				playVideoAndPauseOthers($('.play3 iframe')[0]);
+				});
+
+				*/
+
+				//YOUTUBE STUFF
+
+				function controlSlider(event) {
+					console.log(event);
+					var playerstate = event.data;
+					console.log(playerstate);
+					if (playerstate == 1 || playerstate == 3) {
+						jQuery('#hero .flexslider').flexslider("pause");
+					};
+					if (playerstate == 0 || playerstate == 2) {
+						jQuery('#hero .flexslider').flexslider("play");
+					};
+				};
+
+				var player = new YT.Player('youtubevideo', {
+					events : {
+						'onReady' : function(event) {
+							console.log(event);
+						},
+						'onStateChange' : function(event) {
+							controlSlider(event);
+						}
 					}
 				});
 			});
-		</script>
-	</head>
-	<body>
-		<script src="js/jquery-2.0.2.min.js"></script>
-		<script src="js/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/run_prettify.js"></script>
-		<script src="js/prefixfree.min.js"></script>
-		<!-- Google Tag Manager -->
-		<noscript>
-			<iframe src="//www.googletagmanager.com/ns.html?id=GTM-TZJG9Z"
-			height="0" width="0" style="display:none;visibility:hidden"></iframe>
-		</noscript>
-		<script>
+        </script>
+
+    </head>
+    <body>
+        <script src="js/jquery-2.0.2.min.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/run_prettify.js"></script>
+        <script src="js/prefixfree.min.js"></script>
+        <!-- Google Tag Manager -->
+        <noscript>
+            <iframe src="//www.googletagmanager.com/ns.html?id=GTM-TZJG9Z"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <script>
 			(function(w, d, s, l, i) {
 				w[l] = w[l] || [];
 				w[l].push({
@@ -55,11 +161,11 @@
 				j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
 				f.parentNode.insertBefore(j, f);
 			})(window, document, 'script', 'dataLayer', 'GTM-TZJG9Z');
-		</script>
-		<!-- End Google Tag Manager -->
+        </script>
+        <!-- End Google Tag Manager -->
 
-		<!-- Yandex.Metrika counter -->
-		<script type="text/javascript">
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript">
 			(function(d, w, c) {
 				(w[c] = w[c] || []).push(function() {
 					try {
@@ -87,952 +193,29 @@
 					f();
 				}
 			})(document, window, "yandex_metrika_callbacks");
-		</script>
-		<noscript>
-			<div><img src="https://mc.yandex.ru/watch/27039167" style="position:absolute; left:-9999px;" alt="" />
-			</div>
-		</noscript>
-		<!-- /Yandex.Metrika counter -->
+        </script>
+        <noscript>
+            <div><img src="https://mc.yandex.ru/watch/27039167" style="position:absolute; left:-9999px;" alt="" />
+            </div>
+        </noscript>
+        <!-- /Yandex.Metrika counter -->
 
+        <!--First BIG Page block-->
+        <div class="b-container col-md-12" style="margin-top:10px; ">
 
+            <!--Header-->
 
-<!--First BIG Page block-->
-		<div class="b-container col-md-12" style="margin-top:10px; ">
-		
-		
-			<!--Header-->	
-		
-			<div class="header row">
-			
-			
-				<div class="header logo hidden-xs col-md-3 col-sm-3 " style="margin-top:10px;">
-					<img src="logo/yy3.png">
-				</div>
-
-				<div class="header logo visible-xs col-xs-6">
-					<img src="logo/yy3.png" style="width: 120px">
-				</div>
-
-				<div class="col-md-5 col-md-offset-4 col-lg-4 col-lg-offset-5 visible-md visible-lg">
-					<div class="nomer col-md-6">
-						<span style="color:RGB(0,111,183);font-size:11pt;">Работаем в Киеве</span>
-						<br>
-						<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(093)589-34-48</span>
-						<br>
-						<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(097)723-69-70</span>
-						<br>
-						<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(050)635-97-71</span>
-						<br>
-					</div>
-					<div class="col-md-6" style="padding-top:30px; margin-left: -30px">
-						<button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
-							ОБРАТНЫЙ ЗВОНОК
-						</button>
-					</div>
-
-				</div>
-
-				<div class="nomer col-sm-offset-3 col-sm-3 col-xs-6 hidden-md hidden-lg">
-					<span style="color:RGB(0,111,183);font-size:11pt;">Работаем в Киеве</span>
-					<br>
-					<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(093)589-34-48</span>
-					<br>
-					<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(097)723-69-70</span>
-					<br>
-					<span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(050)635-97-71</span>
-					<br>
-				</div>
-				<div class="col-sm-3 visible-sm" style="padding-top:30px; margin-left: -40px;">
-					<button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
-						ОБРАТНЫЙ ЗВОНОК
-					</button>
-				</div>
-
-				<div class="col-xs-12 visible-xs" style="padding-top:10px;">
-					<button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
-						ОБРАТНЫЙ ЗВОНОК
-					</button>
-				</div>
-
-				<hr style="height:2px; clear: both; width: 97.5%" class="col-xs-12">
-			</div>
-			<!--End of Header-->
-
-			<!--Menu-->
-
-			<div class="menu hidden-xs col-md-12">
-				<ul class="ul1">
-					<li class="li1">
-						Ремонт квартир
-					</li>
-					<a href="index.html">
-					<li class="li1">
-						Электрик
-					</li></a>
-					<li class="li1">
-						Электромонтаж
-					</li>
-					<li class="li1">
-						Сантехник
-					</li>
-					<a href="svet/index.html">
-					<li class="li1">
-						Илюминация
-					</li></a>
-					<li class="li1">
-						Домашний мастер
-					</li>
-				</ul>
-			</div>
-			<!--End of Menu-->			
-			
-			<!--Big FON block-->		
-			
-			<div class="col-xs-12" id="fon">
-				<div class="zagolovok col-sm-12 hidden-xs">
-					Услуги Квалифицированного Электрика
-					<br>
-					в Киеве, 24/7
-
-				</div>
-				
-				<div class="zagolovok col-xs-12 visible-xs" style="font-size: 1.7em">
-					Услуги Квалифицированного Электрика
-					<br>
-					в Киеве, 24/7
-
-				</div>
-				
-				
-				
-				<div class="col-md-12">
-					<div id="podzagolovok">
-						<b>Работаем круглосуточно без праздников и выходных</b>
-					</div>
-				</div>
-				
-				<!--Send Form1-->				
-				
-				<div class="col-xs-12 col-md-6 col-md-offset-6 col-lg-5 col-lg-offset-7 ">
-					<div class="form">
-						<div style="padding: 15px 20px 20px 20px">
-							<p style="color:white; font-size:20pt;">Оставьте свои данные</p>
-							<p style="color: white; font-size: 12pt; margin-top: 5px;">и мы перезвоним Вам в течении 5 минут</p>
-						</div>
-						<form action="post.php" method="post">
-
-							<div style="background-color: white; height: 60px; margin-left: 10px; width: 40px;"><img src="icon/png/business64.png" class="img-name" height="40px" width="40px">
-							</div>
-							<div style="margin-top: -60px; margin-left: 40px; margin-right: 5px">
-								<input required="" name="name" class="name" placeholder="Ваше имя" type="text">
-							</div>
-							<div style="width: 40px; height: 60px; background-color: white; margin-left: 10px; margin-top: 12px;"><img src="icon/png/telephone46.png" class="img-name" height="20px" width="20px">
-							</div>
-							<div style="margin-top:-60px; margin-left:40px; margin-right: 5px;">
-								<input required="" name="phone" class="name" placeholder="Ваш номер" type="text">
-							</div>
-							<input class="submit_" name="button" value="ЗАКАЗАТЬ" type="submit">
-							<div class="z1" style="color: white; margin: 5px;">
-								<span style="color:red;"><sup>*</sup></span>минимальная сумма заказа 200 грн
-							</div>
-						</form>
-					</div>
-				</div>
-				
-				<!--End of Send Form1-->
-				
-			</div>
-<!--End of FON block-->
-
-<!--Advantages-->
-
-			<div style="clear: both;">
-				<div class="col-xs-6 col-sm-3 col-md-offset-1 col-md-2" style="min-height: 190px">
-					<div><img class="img-responsive" src="icon/1436710648_owl.png" style="margin: auto"></img>
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Работаем на
-						</p>
-						<b>ПРАЗДНИКИ И ВЫХОДНЫЕ</b>
-					</div>
-				</div>
-
-				<div class="col-xs-6 col-sm-3 col-md-2 " style="min-height: 190px">
-					<div><img class="img-responsive" src="icon/1436710443_telephone.png" style="margin: auto">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Вызов мастера
-						</p>
-						<b>БЕСПЛАТНО</b>
-					</div>
-				</div>
-
-				<div class="hidden-xs col-sm-3 col-md-2">
-					<div><img class="img-responsive" src="icon/1436710625_cup.png" style="margin: auto">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							На все виды работ
-						</p>
-						<b>ГАРАНТИЯ 1 ГОД</b>
-					</div>
-				</div>
-
-				<div class="col-xs-6 col-sm-3 col-md-2">
-					<div><img class="img-responsive" src="icon/1436710623_support.png" style="margin: auto">
-					</div> 
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Консультации
-						</p>
-						<b>БЕСПЛАТНЫЕ</b>
-					</div>
-				</div>
-
-				<div class="col-xs-6  hidden-sm col-md-2">
-					<div><img class="img-responsive" src="icon/1436710558_toolbox.png" style="margin: auto">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							При выборе электротоваров
-						</p>
-						<b>ПОМОЩЬ</b>
-					</div>
-				</div>
-			</div>
-
-<!--Outliner-->
-
-			<table class="hidden-xs" style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 300px;">НАШИ УСЛУГИ</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			
-<!--End of Outliner-->
-
-		</div>
-
-<!--End of First BIG Page block-->
-
-
-
-<!-- Prise for work and description-->
-
-<!--Line1 4 elements-->
-	<div class="col-sm-10 col-sm-offset-1 hidden-xs" style="margin-top: 30px; font-size: 11pt; font-family: Century Gothic;">
-	
-		<div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
-			<div class="l1_i1 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Наиболее часто требуют ремонта розетки на кухне. 
-						Все время включены мощные приборы: плита, чайник... 
-						Поэтому чаще розетки ломаются именно там.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Ремонт/замена<br/>
-					розеток</p>
-				<p style="color:RGB(255,153,0)">от 39 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
-			<div class="l1_i2 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Главный атрибут любой кухни. 
-						Именно от нее зависит, будет ли сегодня борщ на столе. 
-						И к ее подключению нужно относиться крайне внимательно, 
-						так как это самый мощный потребитель любого дома.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Подключение электроплиты</p>
-				<p style="color:RGB(255,153,0)">от 199 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
-			<div class="l1_i3 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Данное устройство защищает вас и ваш дом от 
-						возгораний проводки, короткоих замыканий и ударов эл. током.
-						Поэтому этот прибор в обязательном порядке должен быть установлен 
-						в каждом доме для вашей же безопасности.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Замена автоматических<br>
-					выключателей</p>
-				<p style="color:RGB(255,153,0)">от 39 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
-			<div class="l1_i4 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Правильная установка люстры очень отвественное задание, 
-						к которому нужно относиться серьезно, ведь люстра сильно влияет на внешний вид помещения 
-						и практически является главным украшением всей комнаты.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Установка/замена	<br>
-					люстры</p>
-				<p style="color:RGB(255,153,0)">от 99 грн/шт</p>
-			</div>
-		</div>
-		
-	
-<!--Line2 4 elements-->	
-	
-		<div class="col-md-3 col-sm-4  portfolio-container">
-			<div class="l2_i1 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Одна из самых распостраненных проблем, 
-						ведь современные нагрузки потребителей выросли как минимум в 5 раз, 
-						и проводка в старых домах уже давно исчерпала свой срок службы.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Ремонт<br>
-					подачи питания</p>
-				<p style="color:RGB(255,153,0)">от 199 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-4 portfolio-container">
-			<div class="l2_i2 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Услуга требующая крайней внимательности и опыта.
-						Проблема которая напрямую угрожает вашей безопасности и здоровью 
-						и требует немедленного решения специалистом.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Устранение<br>
-					короткого замыкания</p>
-				<p style="color:RGB(255,153,0)">от 199 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-6  portfolio-container">
-			<div class="l2_i3 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Мы подключаем любую технику: стиральные машины, посудомойные машины, 
-						вытяжки, телевизоры, микроволновые печи, бойлеры и так далее.
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Подключение<br>
-					бытовой техники</p>
-				<p style="color:RGB(255,153,0)">от 199 грн/шт</p>
-			</div>
-		</div>
-		
-		<div class="col-md-3 col-sm-6  portfolio-container">
-			<div class="l2_i4 portfolio">
-				<div class="portfolio-item">
-					<div class="portfolio-text">
-						Данный прибор определяет сколько вы будете платить за электричество 
-						и как большинство других устройств требует особого внимания при подключении, 
-						так как неправильное подключение может наказать вас "рублем".
-					</div>
-				</div>
-			</div>
-			<div>
-				<p>Подключение счетчика</p>
-				<p style="color:RGB(255,153,0)">от 199 грн/шт</p>
-			</div>
-		</div>
-		
-	</div>
-	
-<!--Button Show Price-->
-		<div class="col-xs-12">
-			<input id="price" type="submit" name="submit" data-target="#demo-1" data-toggle="modal" value="СМОТРЕТЬ ПРАЙС" >
-		</div>
-<!-- End Button Show Price-->
-
-
-
-
-<!--Outliner-->
-
-<table style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 250px;">ПОЧЕМУ МЫ</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-<!--End of Outliner-->
-		
-<!--Video-->		
-	<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3" style="margin-top: 30px">
-		<div class="video-misha">
-		<iframe width="100%"  src="https://www.youtube.com/embed/aHRtCxPMgGQ" frameborder="0" allowfullscreen></iframe>
-		</div>
-	</div>
-<!--End of Video-->	
-
-
-<!--Advantages2-->
-
-			<div style="clear: both; padding-top: 30px; padding-bottom: 30px;">
-				<div class="col-xs-6 col-sm-3 col-md-offset-1 col-md-2" style="min-height: 110px">
-					<div><img class="img-responsive" src="icon/bars.jpg" style="margin: auto; height: 50px">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Устраняем поломки<br>
-							любой сложности
-						</p>
-					</div>
-				</div>
-
-				<div class="col-xs-6 col-sm-3 col-md-2 " style="min-height: 110px">
-					<div><img class="img-responsive" src="icon/24-hover-1.jpg" style="margin: auto; height: 50px">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Работаем круглосуточно
-						</p>
-					</div>
-				</div>
-
-				<div class="hidden-xs col-sm-3 col-md-2" style="min-height: 110px">
-					<div><img class="img-responsive" src="icon/procent.jpg" style="margin: auto; height: 50px">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Скидка на материалы для<br>
-							электромонтажа 15%
-						</p>
-					</div>
-				</div>
-
-				<div class="col-xs-6 col-sm-3 col-md-2" style="min-height: 110px">
-					<div><img class="img-responsive" src="icon/ok.jpg" style="margin: auto; height: 50px">
-					</div> 
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Оплата по факту	<br>
-							выполненных работ
-						</p>
-					</div>
-				</div>
-
-				<div class="col-xs-6  hidden-sm col-md-2" style="min-height: 110px">
-					<div><img class="img-responsive" src="icon/timer.jpg" style="margin: auto">
-					</div>
-					<div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
-						<p>
-							Время ожидания<br>
-							мастера 60 минут
-						</p>
-					</div>
-				</div>
-			</div>
-	
-<!--End of Advantages2-->
-
-
-<!--Form2-->
-
-<div id="form2" class="hidden-xs col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2">
-			<br>
-			<span style="color:white; font-size:20pt;">Оставьте свои данные</span>
-			<br>
-			<span style="color:white; font-size:12pt;">и мы перезвоним Вам в течении 5 минут</span>
-			<form action= "post.php" method= "POST">
-				<table style="width:100%; height:60px; margin-top:15px ">
-					<tr class="ul1" style="margin-top:10px;">
-						<td style="padding-left:25px;">
-						<div style="padding-left:4px">
-							<div style="width:40px; height:60px; background-color:white; margin-top:0px; "><img src="icon/png/business64.png" class="img-name">
-							</div>
-						</div>
-						<div style="margin-top:-60px;padding-left:35px;">
-							<input required class="name" type="text" name="name" placeholder="Ваше имя" >
-						</div></td>
-						<td>
-						<div style="padding-left:10px">
-							<div style="width:40px; height:60px; background-color:white; margin-top:0px; "><img src="icon/png/telephone46.png" class="img-name"  width="10px"; height="10px">
-							</div>
-						</div>
-						<div style="margin-top:-60px; padding-left:40px">
-							<input required class="name" type="text" name="phone" placeholder="Ваш номер" >
-						</div></td>
-						<td>
-						<div style="padding:0px; margin: auto; width: 145px">
-							<button class="submit_" type="submit" name="submit" value="ЗАКАЗАТЬ" style=" margin-top:0px; width: 100%;">
-								ЗАКАЗАТЬ
-							</button>
-						</div></td>
-					</tr>
-				</table>
-			</form>
-			<div class="z1 col-sm-10 col-sm-offset-1" style="margin-top: 10px; padding-left:60px; text-align: right;">
-				<p><sup style="color:red;">*</sup>минимальная сумма заказа 200 грн</p>
-			</div>
-		</div>
-		
-<!--End of Form2-->
-
-
-<!--Outliner-->
-
-<table class="hidden-xs" style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 600px;">3 ПРИЧИНЫ РАБОТАТЬ С НАМИ</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-
-<!--End of Outliner-->
-	
-<!--Our Advantages His Disadvantages-->	
-
-	<div class="visible-md visible-lg col-sm-12 Adv_Disadv" style="font-size:12pt; ">
-	
-			<div class="ramka col-sm-12">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Мастер ничего не сделал и взял с вас деньги</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Наши мастера устраняют поломки любой сложности и<br>
-					принимают оплату только за выполненную работу</p>
-				</div>
-			</div>
-			
-			
-			<div class="ramka col-sm-12">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Обманул и завысил стоимость работы</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Мы всегда заранее сообщаем только реальную стоимость<br>
-				работы (если стоимость можно определить заранее)</p>
-				</div>
-			</div>
-			
-			<div class="ramka col-sm-12 " style="margin-bottom: 20px;">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Мастер ничего не сделал и взял с вас деньги</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Наши мастера устраняют поломки любой сложности и<br>
-					принимают оплату только за выполненную работу</p>
-				</div>
-			</div>
-			
-		</div>
-		
-<!--Our Advantages His Disadvantages Tablet-->	
-
-	<div class="visible-sm col-sm-12" style="font-size:9pt; ">
-	
-			<div class="ramka col-sm-12" style="margin-top:0;">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Мастер ничего не сделал и взял с вас деньги</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Наши мастера устраняют поломки любой сложности и<br>
-					принимают оплату только за выполненную работу</p>
-				</div>
-			</div>
-			
-			
-			<div class="ramka col-sm-12" style="margin-top:0;">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Обманул и завысил стоимость работы</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Мы всегда заранее сообщаем только реальную стоимость<br>
-				работы (если стоимость можно определить заранее)</p>
-				</div>
-			</div>
-			
-			<div class="ramka col-sm-12" style="margin-top:0;">
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto">
-					Мастер ничего не сделал и взял с вас деньги</p>
-				</div>
-			
-				<div class=" col-sm-6 Y_N_text" >
-					<p style="margin: auto; padding-right: 80px">
-					Наши мастера устраняют поломки любой сложности и<br>
-					принимают оплату только за выполненную работу</p>
-				</div>
-			</div>
-			
-		</div>		
-		
-		
-<!--End of Our Advantages His Disadvantages-->	
-
-<!--Outliner-->
-<table style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 200px;">ОТЗЫВЫ</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-<!--End of Outliner-->
-
-<!--Block of Videolist-->
-		<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 VLmedia" >
-			<div id="main" role="main" style="height: 100%">
-				<section class="slider" style="height: 100%">
-					<div class="flexslider" style="height: 80%; margin: 1%;">
-						<ul class="slides">
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/5bzElVb4yMU" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li >
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/L2wCBioj4ks" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/den1d-bJBh0" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/RCf5qrmQxDQ" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/3HVVzVNyVpM" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/TGCZyuy57VA" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/u_YZuFsQ9Hw" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-							<li class="video-slider">
-								<iframe width="100%"  src="https://www.youtube.com/embed/KKaMZl53yBs" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
-							</li>
-						</ul>
-					</div>
-				</section>
-			</div>
-
-		</div>
-<!--End of Block of Videolist-->
-
-
-<!--Outliner-->		
-	<table class="hidden-xs" style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 350px;">НАМ ДОВЕРЯЮТ</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-<!--End of Outliner-->
-
-<!--Clients-->
-
-			<div class="hidden-xs" style="clear: both;">
-				<div class=" col-sm-3 col-md-offset-1 col-md-2 " >
-					<div class="clients">
-					<img class="clients_img" src="picture/novus.png" style="width:155px; height:50px;">
-					</div>
-				</div>
-
-				<div class=" col-sm-3 col-md-2">
-					<div class="clients">
-						<img class="clients_img" src="picture/pozitiv.png" style="margin: auto; width:145px; height:70px;" >
-					</div>
-				</div>
-
-				<div class=" col-sm-3 col-md-2">
-					<div class="clients">
-						<img class="clients_img" src="picture/thai.png" style="margin: auto; width:140px; height:85px;">
-					</div>
-				</div>
-
-				<div class=" col-sm-3 col-md-2">
-					<div class="clients">
-						<img class="clients_img" src="picture/bar.png" style="margin: auto; width:95px; height:85px;">
-					</div> 
-				</div>
-
-				<div class="  hidden-sm col-md-2">
-					<div class="clients">
-						<img class="clients_img" src="picture/eko.jpg" style="margin: auto; width:145px; height:90px;">
-					</div>
-				</div>
-			</div>
-
-<!--End of Clients-->
-
-
-<!--Ask Master-->
-
-			<div class="hidden-xs col-sm-10 col-sm-offset-1" id="mene" style="clear: both; margin-top: 30px;">
-				<div id="mene-1">
-					Остались дополнительные вопросы?
-				</div>
-				<div style="padding-bottom: 20px">
-					<button id="master" type="submit" name="submit" data-toggle="modal" data-target="#demo-3" >
-						Задать вопрос мастеру
-					</button>
-				</div>
-			</div>
-			
-<!--End of Ask Master-->			
-			
-			<div class="hidden-xs col-sm-12" style="margin:20px auto; font-family:Century Gothic; clear: both;">
-				<span style="font-size:18pt; font-weight:bold;">СПАСИБО, ЧТО ВЫБРАЛИ ИМЕННО НАС</span>
-				<br>
-				<span style="font-size:14pt;">Мы предоставляем квалифицированную помощь в решении проблем с электрикой любой сложности</span>
-			</div>
-			
-<!--Outliner-->		
-	<table class="hidden-xs" style="width: 95%; margin-top:70px;">
-				<tbody>
-					<tr>
-						<td style="float:left; width: 100%;">
-						<hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
-						</td>
-						<td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 500px;">УСЛУГИ И ПРЕИМУЩЕСТВА</td>
-						<td style="float:right; width: 100%">
-						<hr style="height:3px; background-color:RGB(0,111,183);">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-<!--End of Outliner-->	
-
-<!--Full of Text))-->
-
-<table class="hidden-xs col-sm-12">
-                <tr style="  text-align:left; vertical-align: top;">
-                    <td style="font-family:Century Gothic;font-size:12pt;">
-                    <div style="padding-left:20%; padding-top:40px">
-                        <span style="font-size:18pt; font-weight:bold;">Вызвать опытного электрика</span>
-                        <br>
-                        <br>
-                        Воспользуйтесь услугами квалифицированного
-                        <br>
-                        электрика с 10 летним опытом работы.
-                        <br>
-                        Наши мастера непьющие и опрятно выглядят.
-                        <br>
-                        Устраняют любые поломки и неисправности.
-                        <br>
-                        Дают гарантию на выполненные работы.
-                        <br>
-                        Мастер будет в течении часа.
-                        <br>
-                        Чтобы вызвать электрика в Киеве
-                        <br>
-                        звоните 093-589-34-48 или оставьте заявку
-                        <br>
-                        на сайте и мы перезвоним вам через 5 минут.
-                    </div></td>
-                    <td style="font-family:Century Gothic;font-size:12pt; padding-top: 40px;">
-                    <span style="font-size:18pt; font-weight:bold;">Срочно вызвать электрика на дом</span>
-                    <br>
-                    <br>
-                    70% домов Киева строились более 20 лет назад.
-                    <br>
-                    Старая проводка не рассчитана на нагрузку
-                    <br>
-                    современных приборов. Один электро чайник
-                    <br>
-                    потребляет 2 кВт мощности. А плита от 5,5 кВт.
-                    <br>
-                    Не удивительно что проводка выходит из строя
-                    <br>
-                    и нужно срочно вызвать электрика для
-                    <br>
-                    быстрой помощи.Вызвать мастера 050-635-97-71 </td>
-                </tr>
-                <tr style=" text-align:left; ">
-                    <td style="font-family:Century Gothic;font-size:12pt; ">
-                    <div style="padding-left:20%; padding-top:20px">
-                        <span style="font-size:18pt; font-weight:bold;">Аварийный вызов электрика</span>
-                        <br>
-                        <br>
-                        Случаются форс-мажорные ситуации,
-                        <br>
-                        которые нужно немедленно исправлять.
-                        <br>
-                        Большинство компаний работает в будние дни.
-                        <br>
-                        А если поломка случилась в пятницу вечером?
-                        <br>
-                        Что, ждать аж до понедельника?
-                        <br>
-                        А если это серьезная неисправность?
-                        <br>
-                        Такие ситуации требуют немедленного решения
-                        <br>
-                        и угрожают вашему здоровью и жизни.
-                        <br>
-                        Мы работаем круглосуточно без выходных.
-                        <br>
-                        Круглосуточный аварийный вызов электрика.
-                        <br>
-                        В любой аварийной ситуации звоните 093-589-34-48
-                    </div></td>
-                    <td style="font-family:Century Gothic;font-size:12pt; vertical-align: top;  padding-top: 20px;">
-                    <span style="font-size:18pt; font-weight:bold;">Бесплатный вызов мастера</span>
-                    <br>
-                    <br>
-                    Множество компаний берут плату за вызов мастера,
-                    <br>
-                    К примеру 50 грн. Но не указывают стоимость работ.
-                    <br>
-                    Мы не берем деньги за приезд мастера.
-                    <br>
-                    И осознано предоставляем басплатный вызов, зная,
-                    <br>
-                    что наш специалист абсолютно точно исправит поломку.
-                    <br>
-                    (за исключением когда нужно снимать пломбу,
-                    <br>
-                    нет доступа к питанию или в иных проблемных ситуациях)
-                    <br>
-                    Вы платите только за выполненную работу.
-                    <br>
-                    Стоимость работы чаще всего составляет 200 грн.
-                    <br>
-                    Стоимость материалов и закупка учитываются отдельно. </td>
-
-                </tr>
-                <tr>
-                    <td style="font-family:Century Gothic;font-size:12pt;text-align:left; ">
-                    <div style="padding-left:20%;padding-top:40px">
-                        <span style="color:red; font-size:18pt;"><sup>*</sup></span>
-                        <strong>Обратите внимание:</strong>
-                        <br>
-                        Стоимость минимальных услуг
-                        <br>
-                        с 08.00 до 20.00 - 200 грн
-                        <br>
-                        с 20.00 до 22.00 - 310 грн
-                        <br>
-                        с 22.00 до 08.00 - 500 грн
-                    </div></td>
-                    <td style="font-family:Century Gothic;font-size:12pt;text-align:left; padding-top: 50px;"> Стоимость составления сметы - 100 грн
-                    <br>
-                    Если после составления сметы мы выполняем электромонтаж,
-                    <br>
-                    то стоимость сметы учитывается в стоимость работ. </td>
-                </tr>
-
-            </table>
-            
-            
-<!--End of Full of Text))-->
-
-
-<!--Footer-->   
- <hr style="height:2px; clear: both; width: 97.5%" class="col-xs-12">       
             <div class="header row">
-            
-            
-                <div class="logo header hidden-xs col-md-3 col-sm-3 " style="margin-top:0px; margin-left: 8.33333%">
+
+                <div class="header logo hidden-xs col-md-3 col-sm-3 " style="margin-top:10px;">
                     <img src="logo/yy3.png">
-                    <div style="font-family:Century Gothic; font-size:8pt; margin: auto; width: 230px">
-                        <p style="text-align: left;">Круглосуточный вызов электрика в Киеве.
-                        <br>
-                        Работаем без праздников и выходных.</p>
-                        <div style="font-family:Century Gothic; font-size:8pt; color:silver; ">
-                            expert5.com.ua | &copy; 2015
-                            <br>
-                            Украина г.Киев
-                        </div>
-                    </div>
                 </div>
 
-                <div class="logo header visible-xs col-xs-6">
-                    <img src="logo/yy3.png" style="width: 120px;">
+                <div class="header logo visible-xs col-xs-6">
+                    <img src="logo/yy3.png" style="width: 120px">
                 </div>
 
-                <div class="col-md-3 col-lg-4 visible-lg visible-md" style="margin-top: 30px;">
-                    <div style="font-family:Century Gothic; font-size:10pt;">
-                        Следите за нами в социальных сетях:
-                    </div>
-                    <div style="padding-top: 10px;">
-                        <a href="https://www.youtube.com/channel/UCYHnw1G1qerWPeX9ChpKlUg" target="_blank"><img src="icon/yt.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="https://www.facebook.com/groups/24service/" target="_blank"><img src="icon/fb.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="http://vk.com/5expert" target="_blank"><img src="icon/vk.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="https://plus.google.com/+Expert5Ua5/videos" target="_blank" ><img src="icon/g.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                    </div>
-                </div>
-
-
-                <div class="col-md-5 col-lg-4 visible-md visible-lg">
+                <div class="col-md-5 col-md-offset-4 col-lg-4 col-lg-offset-5 visible-md visible-lg">
                     <div class="nomer col-md-6">
                         <span style="color:RGB(0,111,183);font-size:11pt;">Работаем в Киеве</span>
                         <br>
@@ -1061,7 +244,7 @@
                     <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(050)635-97-71</span>
                     <br>
                 </div>
-                <div class="col-sm-3 col-sm-offset-3 visible-sm">
+                <div class="col-sm-3 visible-sm" style="padding-top:30px; margin-left: -40px;">
                     <button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
                         ОБРАТНЫЙ ЗВОНОК
                     </button>
@@ -1073,27 +256,986 @@
                     </button>
                 </div>
 
-                <div class="col-xs-12 visible-xs visible-sm" style="margin-top: 10px; margin-bottom: 30px;">
-                    <div style="font-family:Century Gothic; font-size:10pt;">
-                        Следите за нами в социальных сетях:
-                    </div>
-                    <div>
-                        <a href="https://www.youtube.com/channel/UCYHnw1G1qerWPeX9ChpKlUg" target="_blank"><img src="icon/yt.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="https://www.facebook.com/groups/24service/" target="_blank"><img src="icon/fb.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="http://vk.com/5expert" target="_blank"><img src="icon/vk.jpg" width="35px"; height="35px"; hspace="2,5"></a>
-                        <a href="https://plus.google.com/+Expert5Ua5/videos" target="_blank" ><img src="icon/g.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                <hr style="height:2px; clear: both; width: 97.5%" class="col-xs-12">
+            </div>
+            <!--End of Header-->
+
+            <!--Menu-->
+
+            <div class="menu hidden-xs col-md-12">
+                <ul class="ul1">
+                    <li class="li1">
+                        Ремонт квартир
+                    </li>
+                    <a href="index.html">
+                    <li class="li1">
+                        Электрик
+                    </li></a>
+                    <li class="li1">
+                        Электромонтаж
+                    </li>
+                    <li class="li1">
+                        Сантехник
+                    </li>
+                    <a href="svet/index.html">
+                    <li class="li1">
+                        Илюминация
+                    </li></a>
+                    <li class="li1">
+                        Домашний мастер
+                    </li>
+                </ul>
+            </div>
+            <!--End of Menu-->
+
+            <!--Big FON block-->
+
+            <div class="col-xs-12" id="fon">
+                <div class="zagolovok col-sm-12 hidden-xs">
+                    Услуги Квалифицированного Электрика
+                    <br>
+                    в Киеве, 24/7
+
+                </div>
+
+                <div class="zagolovok col-xs-12 visible-xs" style="font-size: 1.7em">
+                    Услуги Квалифицированного Электрика
+                    <br>
+                    в Киеве, 24/7
+
+                </div>
+
+                <div class="col-md-12">
+                    <div id="podzagolovok">
+                        <b>Работаем круглосуточно без праздников и выходных</b>
                     </div>
                 </div>
 
+                <!--Send Form1-->
 
+                <div class="col-xs-12 col-md-6 col-md-offset-6 col-lg-5 col-lg-offset-7 ">
+                    <div class="form">
+                        <div style="padding: 15px 20px 20px 20px">
+                            <p style="color:white; font-size:20pt;">
+                                Оставьте свои данные
+                            </p>
+                            <p style="color: white; font-size: 12pt; margin-top: 5px;">
+                                и мы перезвоним Вам в течении 5 минут
+                            </p>
+                        </div>
+                        <form action="post.php" method="post">
 
+                            <div style="background-color: white; height: 60px; margin-left: 10px; width: 40px;"><img src="icon/png/business64.png" class="img-name" height="40px" width="40px">
+                            </div>
+                            <div style="margin-top: -60px; margin-left: 40px; margin-right: 5px">
+                                <input required="" name="name" class="name" placeholder="Ваше имя" type="text">
+                            </div>
+                            <div style="width: 40px; height: 60px; background-color: white; margin-left: 10px; margin-top: 12px;"><img src="icon/png/telephone46.png" class="img-name" height="20px" width="20px">
+                            </div>
+                            <div style="margin-top:-60px; margin-left:40px; margin-right: 5px;">
+                                <input required="" name="phone" class="name" placeholder="Ваш номер" type="text">
+                            </div>
+                            <input class="submit_" name="button" value="ЗАКАЗАТЬ" type="submit">
+                            <div class="z1" style="color: white; margin: 5px;">
+                                <span style="color:red;"><sup>*</sup></span>минимальная сумма заказа 200 грн
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
+                <!--End of Send Form1-->
 
-             </div>
-  <!--End of Footer-->
+            </div>
+            <!--End of FON block-->
 
+            <!--Advantages-->
 
-  <!--TextPrice-->
+            <div style="clear: both;">
+                <div class="col-xs-6 col-sm-3 col-md-offset-1 col-md-2" style="min-height: 190px">
+                    <div><img class="img-responsive" src="icon/1436710648_owl.png" style="margin: auto"></img>
+                    </div>
+                    <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                        <p>
+                            Работаем на
+                        </p>
+                        <b>ПРАЗДНИКИ И ВЫХОДНЫЕ</b>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-sm-3 col-md-2 " style="min-height: 190px">
+                    <div><img class="img-responsive" src="icon/1436710443_telephone.png" style="margin: auto">
+                    </div>
+                    <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                        <p>
+                            Вызов мастера
+                        </p>
+                        <b>БЕСПЛАТНО</b>
+                    </div>
+                </div>
+
+                <div class="hidden-xs col-sm-3 col-md-2">
+                    <div><img class="img-responsive" src="icon/1436710625_cup.png" style="margin: auto">
+                    </div>
+                    <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                        <p>
+                            На все виды работ
+                        </p>
+                        <b>ГАРАНТИЯ 1 ГОД</b>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-sm-3 col-md-2">
+                    <div><img class="img-responsive" src="icon/1436710623_support.png" style="margin: auto">
+                    </div>
+                    <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                        <p>
+                            Консультации
+                        </p>
+                        <b>БЕСПЛАТНЫЕ</b>
+                    </div>
+                </div>
+
+                <div class="col-xs-6  hidden-sm col-md-2">
+                    <div><img class="img-responsive" src="icon/1436710558_toolbox.png" style="margin: auto">
+                    </div>
+                    <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                        <p>
+                            При выборе электротоваров
+                        </p>
+                        <b>ПОМОЩЬ</b>
+                    </div>
+                </div>
+            </div>
+
+            <!--Outliner-->
+
+            <table class="hidden-xs" style="width: 95%; margin-top:70px;">
+                <tbody>
+                    <tr>
+                        <td style="float:left; width: 100%;">
+                        <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                        </td>
+                        <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 300px;">НАШИ УСЛУГИ</td>
+                        <td style="float:right; width: 100%">
+                        <hr style="height:3px; background-color:RGB(0,111,183);">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!--End of Outliner-->
+
+        </div>
+
+        <!--End of First BIG Page block-->
+
+        <!-- Prise for work and description-->
+
+        <!--Line1 4 elements-->
+        <div class="col-sm-10 col-sm-offset-1 hidden-xs" style="margin-top: 30px; font-size: 11pt; font-family: Century Gothic;">
+
+            <div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
+                <div class="l1_i1 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Наиболее часто требуют ремонта розетки на кухне.
+                            Все время включены мощные приборы: плита, чайник...
+                            Поэтому чаще розетки ломаются именно там.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Ремонт/замена
+                        <br/>
+                        розеток
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 39 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
+                <div class="l1_i2 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Главный атрибут любой кухни.
+                            Именно от нее зависит, будет ли сегодня борщ на столе.
+                            И к ее подключению нужно относиться крайне внимательно,
+                            так как это самый мощный потребитель любого дома.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Подключение электроплиты
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 199 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
+                <div class="l1_i3 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Данное устройство защищает вас и ваш дом от
+                            возгораний проводки, короткоих замыканий и ударов эл. током.
+                            Поэтому этот прибор в обязательном порядке должен быть установлен
+                            в каждом доме для вашей же безопасности.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Замена автоматических
+                        <br>
+                        выключателей
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 39 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-xs-6 portfolio-container">
+                <div class="l1_i4 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Правильная установка люстры очень отвественное задание,
+                            к которому нужно относиться серьезно, ведь люстра сильно влияет на внешний вид помещения
+                            и практически является главным украшением всей комнаты.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Установка/замена
+                        <br>
+                        люстры
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 99 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <!--Line2 4 elements-->
+
+            <div class="col-md-3 col-sm-4  portfolio-container">
+                <div class="l2_i1 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Одна из самых распостраненных проблем,
+                            ведь современные нагрузки потребителей выросли как минимум в 5 раз,
+                            и проводка в старых домах уже давно исчерпала свой срок службы.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Ремонт
+                        <br>
+                        подачи питания
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 199 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 portfolio-container">
+                <div class="l2_i2 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Услуга требующая крайней внимательности и опыта.
+                            Проблема которая напрямую угрожает вашей безопасности и здоровью
+                            и требует немедленного решения специалистом.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Устранение
+                        <br>
+                        короткого замыкания
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 199 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6  portfolio-container">
+                <div class="l2_i3 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Мы подключаем любую технику: стиральные машины, посудомойные машины,
+                            вытяжки, телевизоры, микроволновые печи, бойлеры и так далее.
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Подключение
+                        <br>
+                        бытовой техники
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 199 грн/шт
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6  portfolio-container">
+                <div class="l2_i4 portfolio">
+                    <div class="portfolio-item">
+                        <div class="portfolio-text">
+                            Данный прибор определяет сколько вы будете платить за электричество
+                            и как большинство других устройств требует особого внимания при подключении,
+                            так как неправильное подключение может наказать вас "рублем".
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p>
+                        Подключение счетчика
+                    </p>
+                    <p style="color:RGB(255,153,0)">
+                        от 199 грн/шт
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Button Show Price-->
+        <div class="col-xs-12">
+            <input id="price" type="submit" name="submit" data-target="#demo-1" data-toggle="modal" value="СМОТРЕТЬ ПРАЙС" >
+        </div>
+        <!-- End Button Show Price-->
+
+        <!--Outliner-->
+
+        <table style="width: 95%; margin-top:70px;">
+            <tbody>
+                <tr>
+                    <td style="float:left; width: 100%;">
+                    <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                    </td>
+                    <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 250px;">ПОЧЕМУ МЫ</td>
+                    <td style="float:right; width: 100%">
+                    <hr style="height:3px; background-color:RGB(0,111,183);">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!--End of Outliner-->
+
+        <!--Video-->
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-6 col-md-offset-3" style="margin-top: 30px">
+            <div class="video-misha">
+                <iframe width="100%"  src="https://www.youtube.com/embed/aHRtCxPMgGQ" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+        <!--End of Video-->
+
+        <!--Advantages2-->
+
+        <div style="clear: both; padding-top: 30px; padding-bottom: 30px;">
+            <div class="col-xs-6 col-sm-3 col-md-offset-1 col-md-2" style="min-height: 110px">
+                <div><img class="img-responsive" src="icon/bars.jpg" style="margin: auto; height: 50px">
+                </div>
+                <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                    <p>
+                        Устраняем поломки
+                        <br>
+                        любой сложности
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-xs-6 col-sm-3 col-md-2 " style="min-height: 110px">
+                <div><img class="img-responsive" src="icon/24-hover-1.jpg" style="margin: auto; height: 50px">
+                </div>
+                <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                    <p>
+                        Работаем круглосуточно
+                    </p>
+                </div>
+            </div>
+
+            <div class="hidden-xs col-sm-3 col-md-2" style="min-height: 110px">
+                <div><img class="img-responsive" src="icon/procent.jpg" style="margin: auto; height: 50px">
+                </div>
+                <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                    <p>
+                        Скидка на материалы для
+                        <br>
+                        электромонтажа 15%
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-xs-6 col-sm-3 col-md-2" style="min-height: 110px">
+                <div><img class="img-responsive" src="icon/ok.jpg" style="margin: auto; height: 50px">
+                </div>
+                <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                    <p>
+                        Оплата по факту
+                        <br>
+                        выполненных работ
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-xs-6  hidden-sm col-md-2" style="min-height: 110px">
+                <div><img class="img-responsive" src="icon/timer.jpg" style="margin: auto">
+                </div>
+                <div style="font-family:Century Gothic; font-size:10pt; text-align:center;">
+                    <p>
+                        Время ожидания
+                        <br>
+                        мастера 60 минут
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--End of Advantages2-->
+
+        <!--Form2-->
+
+        <div id="form2" class="hidden-xs col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-2">
+            <br>
+            <span style="color:white; font-size:20pt;">Оставьте свои данные</span>
+            <br>
+            <span style="color:white; font-size:12pt;">и мы перезвоним Вам в течении 5 минут</span>
+            <form action= "post.php" method= "POST">
+                <table style="width:100%; height:60px; margin-top:15px ">
+                    <tr class="ul1" style="margin-top:10px;">
+                        <td style="padding-left:25px;">
+                        <div style="padding-left:4px">
+                            <div style="width:40px; height:60px; background-color:white; margin-top:0px; "><img src="icon/png/business64.png" class="img-name">
+                            </div>
+                        </div>
+                        <div style="margin-top:-60px;padding-left:35px;">
+                            <input required class="name" type="text" name="name" placeholder="Ваше имя" >
+                        </div></td>
+                        <td>
+                        <div style="padding-left:10px">
+                            <div style="width:40px; height:60px; background-color:white; margin-top:0px; "><img src="icon/png/telephone46.png" class="img-name"  width="10px"; height="10px">
+                            </div>
+                        </div>
+                        <div style="margin-top:-60px; padding-left:40px">
+                            <input required class="name" type="text" name="phone" placeholder="Ваш номер" >
+                        </div></td>
+                        <td>
+                        <div style="padding:0px; margin: auto; width: 145px">
+                            <button class="submit_" type="submit" name="submit" value="ЗАКАЗАТЬ" style=" margin-top:0px; width: 100%;">
+                                ЗАКАЗАТЬ
+                            </button>
+                        </div></td>
+                    </tr>
+                </table>
+            </form>
+            <div class="z1 col-sm-10 col-sm-offset-1" style="margin-top: 10px; padding-left:60px; text-align: right;">
+                <p>
+                    <sup style="color:red;">*</sup>минимальная сумма заказа 200 грн
+                </p>
+            </div>
+        </div>
+
+        <!--End of Form2-->
+
+        <!--Outliner-->
+
+        <table class="hidden-xs" style="width: 95%; margin-top:70px;">
+            <tbody>
+                <tr>
+                    <td style="float:left; width: 100%;">
+                    <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                    </td>
+                    <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 600px;">3 ПРИЧИНЫ РАБОТАТЬ С НАМИ</td>
+                    <td style="float:right; width: 100%">
+                    <hr style="height:3px; background-color:RGB(0,111,183);">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!--End of Outliner-->
+
+        <!--Our Advantages His Disadvantages-->
+
+        <div class="visible-md visible-lg col-sm-12 Adv_Disadv" style="font-size:12pt; ">
+
+            <div class="ramka col-sm-12">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Мастер ничего не сделал и взял с вас деньги
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Наши мастера устраняют поломки любой сложности и
+                        <br>
+                        принимают оплату только за выполненную работу
+                    </p>
+                </div>
+            </div>
+
+            <div class="ramka col-sm-12">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Обманул и завысил стоимость работы
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Мы всегда заранее сообщаем только реальную стоимость
+                        <br>
+                        работы (если стоимость можно определить заранее)
+                    </p>
+                </div>
+            </div>
+
+            <div class="ramka col-sm-12 " style="margin-bottom: 20px;">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Мастер ничего не сделал и взял с вас деньги
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Наши мастера устраняют поломки любой сложности и
+                        <br>
+                        принимают оплату только за выполненную работу
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Our Advantages His Disadvantages Tablet-->
+
+        <div class="visible-sm col-sm-12" style="font-size:9pt; ">
+
+            <div class="ramka col-sm-12" style="margin-top:0;">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Мастер ничего не сделал и взял с вас деньги
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Наши мастера устраняют поломки любой сложности и
+                        <br>
+                        принимают оплату только за выполненную работу
+                    </p>
+                </div>
+            </div>
+
+            <div class="ramka col-sm-12" style="margin-top:0;">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Обманул и завысил стоимость работы
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Мы всегда заранее сообщаем только реальную стоимость
+                        <br>
+                        работы (если стоимость можно определить заранее)
+                    </p>
+                </div>
+            </div>
+
+            <div class="ramka col-sm-12" style="margin-top:0;">
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto">
+                        Мастер ничего не сделал и взял с вас деньги
+                    </p>
+                </div>
+
+                <div class=" col-sm-6 Y_N_text" >
+                    <p style="margin: auto; padding-right: 80px">
+                        Наши мастера устраняют поломки любой сложности и
+                        <br>
+                        принимают оплату только за выполненную работу
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!--End of Our Advantages His Disadvantages-->
+
+        <!--Outliner-->
+        <table style="width: 95%; margin-top:70px;">
+            <tbody>
+                <tr>
+                    <td style="float:left; width: 100%;">
+                    <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                    </td>
+                    <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 200px;">ОТЗЫВЫ</td>
+                    <td style="float:right; width: 100%">
+                    <hr style="height:3px; background-color:RGB(0,111,183);">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--End of Outliner-->
+
+        <!--Block of Videolist-->
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 VLmedia" >
+            <div id="main" role="main" style="height: 100%">
+                <section id="hero" class="slider" style="height: 100%">
+                    <div  class="flexslider" style="height: 80%; margin: 1%;">
+                        <ul class="slides">
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/5bzElVb4yMU?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li >
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/L2wCBioj4ks?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/den1d-bJBh0?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/RCf5qrmQxDQ?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/3HVVzVNyVpM?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/TGCZyuy57VA?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/u_YZuFsQ9Hw?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                            <li class="video-slider slide play3">
+                                <iframe width="100%" id="youtubevideo" src="https://www.youtube.com/embed/KKaMZl53yBs?enablejsapi=1&version=3&playerapiid=youtubevideo" frameborder="0" allowfullscreen style="padding-top:30px;"></iframe>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+        <!--End of Block of Videolist-->
+
+        <!--Outliner-->
+        <table class="hidden-xs" style="width: 95%; margin-top:70px;">
+            <tbody>
+                <tr>
+                    <td style="float:left; width: 100%;">
+                    <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                    </td>
+                    <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 350px;">НАМ ДОВЕРЯЮТ</td>
+                    <td style="float:right; width: 100%">
+                    <hr style="height:3px; background-color:RGB(0,111,183);">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--End of Outliner-->
+
+        <!--Clients-->
+
+        <div class="hidden-xs" style="clear: both;">
+            <div class=" col-sm-3 col-md-offset-1 col-md-2 " >
+                <div class="clients">
+                    <img class="clients_img" src="picture/novus.png" style="width:155px; height:50px;">
+                </div>
+            </div>
+
+            <div class=" col-sm-3 col-md-2">
+                <div class="clients">
+                    <img class="clients_img" src="picture/pozitiv.png" style="margin: auto; width:145px; height:70px;" >
+                </div>
+            </div>
+
+            <div class=" col-sm-3 col-md-2">
+                <div class="clients">
+                    <img class="clients_img" src="picture/thai.png" style="margin: auto; width:140px; height:85px;">
+                </div>
+            </div>
+
+            <div class=" col-sm-3 col-md-2">
+                <div class="clients">
+                    <img class="clients_img" src="picture/bar.png" style="margin: auto; width:95px; height:85px;">
+                </div>
+            </div>
+
+            <div class="  hidden-sm col-md-2">
+                <div class="clients">
+                    <img class="clients_img" src="picture/eko.jpg" style="margin: auto; width:145px; height:90px;">
+                </div>
+            </div>
+        </div>
+
+        <!--End of Clients-->
+
+        <!--Ask Master-->
+
+        <div class="hidden-xs col-sm-10 col-sm-offset-1" id="mene" style="clear: both; margin-top: 30px;">
+            <div id="mene-1">
+                Остались дополнительные вопросы?
+            </div>
+            <div style="padding-bottom: 20px">
+                <button id="master" type="submit" name="submit" data-toggle="modal" data-target="#demo-3" >
+                    Задать вопрос мастеру
+                </button>
+            </div>
+        </div>
+
+        <!--End of Ask Master-->
+
+        <div class="hidden-xs col-sm-12" style="margin:20px auto; font-family:Century Gothic; clear: both;">
+            <span style="font-size:18pt; font-weight:bold;">СПАСИБО, ЧТО ВЫБРАЛИ ИМЕННО НАС</span>
+            <br>
+            <span style="font-size:14pt;">Мы предоставляем квалифицированную помощь в решении проблем с электрикой любой сложности</span>
+        </div>
+
+        <!--Outliner-->
+        <table class="hidden-xs" style="width: 95%; margin-top:70px;">
+            <tbody>
+                <tr>
+                    <td style="float:left; width: 100%;">
+                    <hr style="height: 3px; background-color: rgb(0, 111, 183); margin-top: 30px;">
+                    </td>
+                    <td style="font-family:Impact; color:RGB(0,111,183); font-size:36pt; width: 500px;">УСЛУГИ И ПРЕИМУЩЕСТВА</td>
+                    <td style="float:right; width: 100%">
+                    <hr style="height:3px; background-color:RGB(0,111,183);">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--End of Outliner-->
+
+        <!--Full of Text))-->
+
+        <table class="hidden-xs col-sm-12">
+            <tr style="  text-align:left; vertical-align: top;">
+                <td style="font-family:Century Gothic;font-size:12pt;">
+                <div style="padding-left:20%; padding-top:40px">
+                    <span style="font-size:18pt; font-weight:bold;">Вызвать опытного электрика</span>
+                    <br>
+                    <br>
+                    Воспользуйтесь услугами квалифицированного
+                    <br>
+                    электрика с 10 летним опытом работы.
+                    <br>
+                    Наши мастера непьющие и опрятно выглядят.
+                    <br>
+                    Устраняют любые поломки и неисправности.
+                    <br>
+                    Дают гарантию на выполненные работы.
+                    <br>
+                    Мастер будет в течении часа.
+                    <br>
+                    Чтобы вызвать электрика в Киеве
+                    <br>
+                    звоните 093-589-34-48 или оставьте заявку
+                    <br>
+                    на сайте и мы перезвоним вам через 5 минут.
+                </div></td>
+                <td style="font-family:Century Gothic;font-size:12pt; padding-top: 40px;"><span style="font-size:18pt; font-weight:bold;">Срочно вызвать электрика на дом</span>
+                <br>
+                <br>
+                70% домов Киева строились более 20 лет назад.
+                <br>
+                Старая проводка не рассчитана на нагрузку
+                <br>
+                современных приборов. Один электро чайник
+                <br>
+                потребляет 2 кВт мощности. А плита от 5,5 кВт.
+                <br>
+                Не удивительно что проводка выходит из строя
+                <br>
+                и нужно срочно вызвать электрика для
+                <br>
+                быстрой помощи.Вызвать мастера 050-635-97-71 </td>
+            </tr>
+            <tr style=" text-align:left; ">
+                <td style="font-family:Century Gothic;font-size:12pt; ">
+                <div style="padding-left:20%; padding-top:20px">
+                    <span style="font-size:18pt; font-weight:bold;">Аварийный вызов электрика</span>
+                    <br>
+                    <br>
+                    Случаются форс-мажорные ситуации,
+                    <br>
+                    которые нужно немедленно исправлять.
+                    <br>
+                    Большинство компаний работает в будние дни.
+                    <br>
+                    А если поломка случилась в пятницу вечером?
+                    <br>
+                    Что, ждать аж до понедельника?
+                    <br>
+                    А если это серьезная неисправность?
+                    <br>
+                    Такие ситуации требуют немедленного решения
+                    <br>
+                    и угрожают вашему здоровью и жизни.
+                    <br>
+                    Мы работаем круглосуточно без выходных.
+                    <br>
+                    Круглосуточный аварийный вызов электрика.
+                    <br>
+                    В любой аварийной ситуации звоните 093-589-34-48
+                </div></td>
+                <td style="font-family:Century Gothic;font-size:12pt; vertical-align: top;  padding-top: 20px;"><span style="font-size:18pt; font-weight:bold;">Бесплатный вызов мастера</span>
+                <br>
+                <br>
+                Множество компаний берут плату за вызов мастера,
+                <br>
+                К примеру 50 грн. Но не указывают стоимость работ.
+                <br>
+                Мы не берем деньги за приезд мастера.
+                <br>
+                И осознано предоставляем басплатный вызов, зная,
+                <br>
+                что наш специалист абсолютно точно исправит поломку.
+                <br>
+                (за исключением когда нужно снимать пломбу,
+                <br>
+                нет доступа к питанию или в иных проблемных ситуациях)
+                <br>
+                Вы платите только за выполненную работу.
+                <br>
+                Стоимость работы чаще всего составляет 200 грн.
+                <br>
+                Стоимость материалов и закупка учитываются отдельно. </td>
+
+            </tr>
+            <tr>
+                <td style="font-family:Century Gothic;font-size:12pt;text-align:left; ">
+                <div style="padding-left:20%;padding-top:40px">
+                    <span style="color:red; font-size:18pt;"><sup>*</sup></span>
+                    <strong>Обратите внимание:</strong>
+                    <br>
+                    Стоимость минимальных услуг
+                    <br>
+                    с 08.00 до 20.00 - 200 грн
+                    <br>
+                    с 20.00 до 22.00 - 310 грн
+                    <br>
+                    с 22.00 до 08.00 - 500 грн
+                </div></td>
+                <td style="font-family:Century Gothic;font-size:12pt;text-align:left; padding-top: 50px;"> Стоимость составления сметы - 100 грн
+                <br>
+                Если после составления сметы мы выполняем электромонтаж,
+                <br>
+                то стоимость сметы учитывается в стоимость работ. </td>
+            </tr>
+
+        </table>
+
+        <!--End of Full of Text))-->
+
+        <!--Footer-->
+        <hr style="height:2px; clear: both; width: 97.5%" class="col-xs-12">
+        <div class="header row">
+
+            <div class="logo header hidden-xs col-md-3 col-sm-3 " style="margin-top:0px; margin-left: 8.33333%">
+                <img src="logo/yy3.png">
+                <div style="font-family:Century Gothic; font-size:8pt; margin: auto; width: 230px">
+                    <p style="text-align: left;">
+                        Круглосуточный вызов электрика в Киеве.
+                        <br>
+                        Работаем без праздников и выходных.
+                    </p>
+                    <div style="font-family:Century Gothic; font-size:8pt; color:silver; ">
+                        expert5.com.ua | &copy; 2015
+                        <br>
+                        Украина г.Киев
+                    </div>
+                </div>
+            </div>
+
+            <div class="logo header visible-xs col-xs-6">
+                <img src="logo/yy3.png" style="width: 120px;">
+            </div>
+
+            <div class="col-md-3 col-lg-4 visible-lg visible-md" style="margin-top: 30px;">
+                <div style="font-family:Century Gothic; font-size:10pt;">
+                    Следите за нами в социальных сетях:
+                </div>
+                <div style="padding-top: 10px;">
+                    <a href="https://www.youtube.com/channel/UCYHnw1G1qerWPeX9ChpKlUg" target="_blank"><img src="icon/yt.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="https://www.facebook.com/groups/24service/" target="_blank"><img src="icon/fb.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="http://vk.com/5expert" target="_blank"><img src="icon/vk.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="https://plus.google.com/+Expert5Ua5/videos" target="_blank" ><img src="icon/g.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-lg-4 visible-md visible-lg">
+                <div class="nomer col-md-6">
+                    <span style="color:RGB(0,111,183);font-size:11pt;">Работаем в Киеве</span>
+                    <br>
+                    <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(093)589-34-48</span>
+                    <br>
+                    <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(097)723-69-70</span>
+                    <br>
+                    <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(050)635-97-71</span>
+                    <br>
+                </div>
+                <div class="col-md-6" style="padding-top:30px; margin-left: -30px">
+                    <button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
+                        ОБРАТНЫЙ ЗВОНОК
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="nomer col-sm-offset-3 col-sm-3 col-xs-6 hidden-md hidden-lg">
+                <span style="color:RGB(0,111,183);font-size:11pt;">Работаем в Киеве</span>
+                <br>
+                <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(093)589-34-48</span>
+                <br>
+                <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(097)723-69-70</span>
+                <br>
+                <span style="font-size:12pt;"><img src="icon/customer service1.png" height="13px" width="13px">(050)635-97-71</span>
+                <br>
+            </div>
+            <div class="col-sm-3 col-sm-offset-3 visible-sm">
+                <button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
+                    ОБРАТНЫЙ ЗВОНОК
+                </button>
+            </div>
+
+            <div class="col-xs-12 visible-xs" style="padding-top:10px;">
+                <button class="zvonok" type="submit" name="submit" data-target="#demo-2" data-toggle="modal">
+                    ОБРАТНЫЙ ЗВОНОК
+                </button>
+            </div>
+
+            <div class="col-xs-12 visible-xs visible-sm" style="margin-top: 10px; margin-bottom: 30px;">
+                <div style="font-family:Century Gothic; font-size:10pt;">
+                    Следите за нами в социальных сетях:
+                </div>
+                <div>
+                    <a href="https://www.youtube.com/channel/UCYHnw1G1qerWPeX9ChpKlUg" target="_blank"><img src="icon/yt.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="https://www.facebook.com/groups/24service/" target="_blank"><img src="icon/fb.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="http://vk.com/5expert" target="_blank"><img src="icon/vk.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                    <a href="https://plus.google.com/+Expert5Ua5/videos" target="_blank" ><img src="icon/g.jpg" width="35px"; height="35px"; hspace="2,5"></a>
+                </div>
+            </div>
+
+        </div>
+        <!--End of Footer-->
+
+        <!--TextPrice-->
 
         <div class="modal fade" id="demo-1" tabindex="-1" >
             <div class="modal-dialog" style=" border-radius:0;font-family:Century Gothic; ">
@@ -1118,8 +1260,7 @@
 
                         <!--End of Outliner-->
 
-
-               <!--Price Table-->
+                        <!--Price Table-->
 
                         <table style="font-family:Century Gothic;width:100%; margin-top:20px; border-spacing: 5px 11px; line-height:2; font-size: 10pt;">
 
@@ -1297,9 +1438,9 @@
                             </tr>
 
                         </table>
-                        
+
                         <!--End of Price Table-->
-                        
+
                         <hr style="width:100%;">
 
                         <div style="font-family:Century Gothic; font-size:12pt; margin-top:-20px; text-align: left;">
@@ -1394,9 +1535,9 @@
             </div>
         </div>
 
-<!--End of TextPrice-->
+        <!--End of TextPrice-->
 
-<!-- [ Modal #2 ] -->
+        <!-- [ Modal #2 ] -->
         <div class="modal fade" id="demo-2" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -1410,26 +1551,26 @@
                             </div>
                             <form action="post.php" method="post" style="margin-bottom: -6px;">
 
-                            <div style="background-color: white; height: 60px; margin-left: 3%; width: 40px;"><img src="icon/png/business64.png" class="img-name" height="40px" width="40px">
-                            </div>
-                            <div style="margin-top: -60px; margin-left: 40px; margin-right: 5px">
-                                <input required="" name="name" class="name" placeholder="Ваше имя" type="text">
-                            </div>
-                            <div style="width: 40px; height: 60px; background-color: white; margin-left: 3%; margin-top: 12px;"><img src="icon/png/telephone46.png" class="img-name" height="20px" width="20px">
-                            </div>
-                            <div style="margin-top:-60px; margin-left:40px; margin-right: 5px;">
-                                <input required="" name="phone" class="name" placeholder="Ваш номер" type="text">
-                            </div>
-                            <input class="submit_" name="button" value="ЗАКАЗАТЬ" type="submit" style="margin: 20px">
-                            
-                        </form>
+                                <div style="background-color: white; height: 60px; margin-left: 3%; width: 40px;"><img src="icon/png/business64.png" class="img-name" height="40px" width="40px">
+                                </div>
+                                <div style="margin-top: -60px; margin-left: 40px; margin-right: 5px">
+                                    <input required="" name="name" class="name" placeholder="Ваше имя" type="text">
+                                </div>
+                                <div style="width: 40px; height: 60px; background-color: white; margin-left: 3%; margin-top: 12px;"><img src="icon/png/telephone46.png" class="img-name" height="20px" width="20px">
+                                </div>
+                                <div style="margin-top:-60px; margin-left:40px; margin-right: 5px;">
+                                    <input required="" name="phone" class="name" placeholder="Ваш номер" type="text">
+                                </div>
+                                <input class="submit_" name="button" value="ЗАКАЗАТЬ" type="submit" style="margin: 20px">
+
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-<!-- [ Modal #3 ] -->
+        <!-- [ Modal #3 ] -->
         <div class="modal fade" id="demo-3" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -1465,13 +1606,11 @@
             </div>
         </div>
 
-
-		<script type="text/javascript">
+        <script type="text/javascript">
 			(window.Image ? (new Image()) : document.createElement('img')).src = location.protocol + '//vk.com/rtrg?r=HUyRd5r0YJOaaC/A7tyt8dr9OqnyAmkQnq*aKlBykqAjkn4BzIJ1O68HTcQT6KoGSJHxvf4TdXC9IaE44KQzu6MSMqGW8w786*Dd*ILZnxjyMrcNooCjEc2Oa3eOWjF7N/p**rrq5EwSBLfJsT7XLs*fXfh7aKhgT1jkIkVBpwI-';
-		</script>
+        </script>
 
-		
-	</body>
+    </body>
 
 </html>
 
