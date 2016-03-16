@@ -27,8 +27,9 @@ p{
 
 
 body {
-	overflow: auto;
-	text-align: center;
+    overflow-y: scroll;
+    text-align: center;
+    overflow-x: hidden;
 }
 
 .logo {
