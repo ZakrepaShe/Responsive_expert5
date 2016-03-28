@@ -139,7 +139,7 @@ input[type="text"]:focus {
 }
 
 .submit_ {
-	width: 75%;
+	width: 94%;
 	height: 60px;
 	font-family: Century Gothic;
 	font-size: 14pt;
@@ -147,6 +147,7 @@ input[type="text"]:focus {
 	border: none;
 	font-weight: bold;
 	margin-top: 12px;
+	margin-left: -2px;
 }
 
 .z1 {
